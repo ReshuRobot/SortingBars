@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sorting Algorithm Visualizer</title>
+    <style>
+      /* Your CSS code here */
+      .bar {
+        display: inline-block;
+        width: 20px;
+        height: 75px;
+        margin-right: 5px;
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <button id="randomizeBtn">Randomize barsay</button>
+      <button id="insertionSort">Insertion Sort</button>
+      <button id="selectionSort">Selection Sort</button>
+      <button id="bubbleSort">Bubble Sort</button>
+      <button id="mergeSort">Merge Sort</button>
+      <button id="shellSort">Shell Sort</button>
+      <button id="changeSizeBars">Change Size Bars</button>
+      <br />
+      <br />
+      <div id="bars-container">
+      
+      </div>
+    </div>
+    <script>
+    
+
+      const barsContainer = document.getElementById("bars-container");// This is the bars container in which all the bars will be present
+      let bars = [];// This is the array in which we will store all the bars
+      let numBars = 20;// This is the number of bars that we want to create
+
+
+// Create bars function will create the bars
+// This function will be called whenever you want to create the bars
+// It will create the bars with random height
+// This way you can call this function after every sorting algorithm to create the bars
+// This way you can create new random bars after every sorting algorithm
+ function createBars() {
+        for (let i = 0; i < numBars; i++) {
+          const bar = document.createElement("div");
+          bar.classList.add("bar");
+          bar.style.height = `${Math.floor(Math.random() * 475) + 1}px`;
+          bars.push(bar);
+          barsContainer.appendChild(bar);
+        }
+      }
+// Randomize bars function will randomize the height of the bars
+// This function will be called whenever you want to randomize the bars
+// It will randomize the height of each bar
+// This way you can call this function after every sorting algorithm to randomize the bars
+// This will make the sorting algorithm more efficient
+// If you don't randomize the bars, the sorting algorithm will take more time to sort the bars
+// This is because the sorting algorithm will have to sort the bars that are already sorted
+// So, it is better to randomize the bars before sorting them
+// This way the sorting algorithm will take less time to sort the bars
+
+      function randomizebarsay() {
+        for (let i = bars.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [bars[i].style.height, bars[j].style.height] = [
+            bars[j].style.height,
+            bars[i].style.height,
+          ];
+        }
+      }
+
+    // Render bars function will render the bars in the bars container
+    // This function will be called whenever you want to render the updated bars
+    // It will remove all the previous bars and then append the updated bars
+    // This way you can call this function after every sorting algorithm to render the updated bars
+   
+    
+      function renderBars() {
+  barsContainer.innerHTML = "";
+  bars.forEach((bar) => {
+    const newBar = document.createElement("div");
+    newBar.classList.add("bar");
+    newBar.style.height = bar.style.height;
+    barsContainer.appendChild(newBar);
+  });
+  bars = Array.from(barsContainer.children);
+}
+
+// Insertion Sort
+function insertionSort() {
+    for (let i = 1; i < bars.length; i++) {
+          let j = i - 1;
+          let temp = bars[i].style.height;
+          while (j >= 0 && parseInt(bars[j].style.height) > parseInt(temp)) {
+            bars[j + 1].style.height = bars[j].style.height;
+            j--;
+          }
+          bars[j + 1].style.height = temp;
+        }
+      }
+
+//Selection Sort
+      function selectionSort() {
+    for (let i = 0; i < bars.length - 1; i++) {
+      let minIndex = i;
+      for (let j = i + 1; j < bars.length; j++) {
+        if (parseInt(bars[j].style.height) < parseInt(bars[minIndex].style.height)) {
+          minIndex = j;
+        }
+      }
+      [bars[i].style.height, bars[minIndex].style.height] = [
+        bars[minIndex].style.height,
+        bars[i].style.height,
+      ];
+    }
+  }
+
+
+
+// Bubble Sort
+function bubbleSort() {
+    //
+    for (let i = 0; i < bars.length - 1; i++) {
+      for (let j = 0; j < bars.length - i - 1; j++) {
+        if (parseInt(bars[j].style.height) > parseInt(bars[j + 1].style.height)) {
+          [bars[j].style.height, bars[j + 1].style.height] = [
+            bars[j + 1].style.height,
+            bars[j].style.height,
+          ];
+        }
+      }
+    }
+  }
+
+// Quick Sort
+function quickSort(left = 0, right = bars.length - 1) {
+  if (left < right) {
+    // This will find the index of the pivot element
+    // This will place the pivot element at its correct position and place all the smaller elements to the left of the pivot element and all the greater elements to the right of the pivot element
+    // This will return the index of the pivot element
+    // This will be used to divide the array into subarrays
+    // This will be used to sort the subarrays
+    let pivotIndex = partition(left, right);
+    quickSort(left, pivotIndex - 1);
+    quickSort(pivotIndex + 1, right);
+  }
+  renderBars();
+}
+
+// Merge Sort
+//this code is sorting the bars in ascending order  using merge sort algorithm 
+
+      function mergeSort() {
+        // This will call the merge sort helper function
+        // This will return the sorted array
+        bars = mergeSortHelper(bars);
+        renderBars();
+      }
+
+      function mergeSortHelper(arr) {
+       
+        // This is the base case
+        if (arr.length <= 1) {
+          return arr;
+        }
+        const mid = Math.floor(arr.length / 2);// This will find the middle index of the array
+        const left = arr.slice(0, mid);// This will create the left subarray
+        const right = arr.slice(mid);// This will create the right subarray
+        return merge(mergeSortHelper(left), mergeSortHelper(right));// This will merge the left and right subarray
+      }
+
+      function merge(left, right) {
+        //this function will merge the left and right subarray in sorted order and return the sorted array 
+        
+        let result = [];// This is the array in which we will store the sorted elements
+        let i = 0;// This is the index for the left subarray
+        let j = 0;// This is the index for the right subarray
+        while (i < left.length && j < right.length) {// This loop will run until i is less than the length of the left subarray and j is less than the length of the right subarray
+          const leftHeight = parseInt(left[i].style.height);// This will find the height of the left subarray element
+          const rightHeight = parseInt(right[j].style.height);// This will find the height of the right subarray element
+
+          if (leftHeight < rightHeight) {
+            // This will push the left subarray element in the result array if it is less than the right subarray element
+            result.push(left[i]);
+            i++;
+          } else {
+            result.push(right[j]);
+            j++;
+          }
+        }
+
+        return result.concat(left.slice(i)).concat(right.slice(j));
+      }
+      
+// Shell Sort
+function shellSort() {
+  let n = bars.length;// This is the length of the bars array
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // This loop will run until the gap is greater than 0 and it will reduce the gap after every iteration
+    // This loop will divide the array into subarrays
+    for (let i = gap; i < n; i++) {
+        // This loop will run until i is less than the length of the array
+        // This loop will sort the subarrays
+      let temp = bars[i].style.height;
+      let j;
+      for (j = i; j >= gap && parseInt(bars[j - gap].style.height) > parseInt(temp); j -= gap) {
+        bars[j].style.height = bars[j - gap].style.height;
+      }
+      bars[j].style.height = temp;
+    }
+    renderBars();
+  }
+}
+
+// Change size bars will shrink in size
+function changeSizeBars(size) {
+  bars.forEach((bar) => {
+    const originalHeight = parseInt(bar.style.height);
+    bar.style.height = `${originalHeight / size}px`;
+  });
+  renderBars();
+}
+
+
+// Event listeners for all the buttons 
+// This will call the respective functions when the buttons are clicked
+
+
+document.getElementById('randomizeBtn').addEventListener('click', randomizebarsay);
+    document.getElementById('insertionSort').addEventListener('click', insertionSort);
+    document.getElementById('changeSizeBars').addEventListener('click', () => {
+      const newSize = parseFloat(prompt('Enter the new size factor:'));
+      if (!isNaN(newSize) && newSize > 0) {
+        changeSizeBars(newSize);
+      } else {
+        alert('Invalid input. Please enter a valid size factor.');
+      }
+    });
+    document.getElementById('selectionSort').addEventListener('click', selectionSort);
+    document.getElementById('bubbleSort').addEventListener('click', bubbleSort
+    );
+    document.getElementById('mergeSort').addEventListener('click', mergeSort);
+    document.getElementById('shellSort').addEventListener('click', shellSort);
+   
+    
+    
+
+createBars();// This will create the bars when the page loads
+// You can also call this function whenever you want to create the bars
+    
+
+
+     
+    </script>
+  </body>
+</html>
+
+
